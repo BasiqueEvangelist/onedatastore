@@ -1,9 +1,9 @@
 package me.basiqueevangelist.onedatastore.testmod;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import me.basiqueevangelist.onedatastore.GlobalComponent;
-import me.basiqueevangelist.onedatastore.OneDataStore;
-import me.basiqueevangelist.onedatastore.PlayerComponent;
+import me.basiqueevangelist.onedatastore.api.Component;
+import me.basiqueevangelist.onedatastore.api.DataStore;
+import me.basiqueevangelist.onedatastore.api.PlayerDataEntry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.text.LiteralText;
@@ -13,15 +13,13 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class OneDataStoreTest implements ModInitializer {
-    public static final GlobalComponent<TestComponent> TEST_GLOBAL = OneDataStore.registerGlobalComponent(
+    public static final Component<TestComponent, DataStore> TEST_GLOBAL = Component.registerGlobal(
         new Identifier("onedatastore-testmod", "test_global"),
-        TestComponent::new,
         TestComponent::new
     );
 
-    public static final PlayerComponent<TestComponent> TEST_PLAYER = OneDataStore.registerPlayerComponent(
+    public static final Component<TestComponent, PlayerDataEntry> TEST_PLAYER = Component.registerPlayer(
         new Identifier("onedatastore-testmod", "test_player"),
-        TestComponent::new,
         TestComponent::new
     );
 
@@ -30,7 +28,7 @@ public class OneDataStoreTest implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             dispatcher.register(literal("read_global_component")
                 .executes(ctx -> {
-                    ctx.getSource().sendFeedback(new LiteralText("global component value is " + TEST_GLOBAL.getFrom(ctx.getSource().getServer()).value), false);
+                    ctx.getSource().sendFeedback(new LiteralText("global component value is " + DataStore.getFor(ctx.getSource().getServer()).get(TEST_GLOBAL).value), false);
 
                     return 1;
                 }));
@@ -40,7 +38,7 @@ public class OneDataStoreTest implements ModInitializer {
                     .executes(ctx -> {
                         int value = IntegerArgumentType.getInteger(ctx, "value");
 
-                        TEST_GLOBAL.getFrom(ctx.getSource().getServer()).value = value;
+                        DataStore.getFor(ctx.getSource().getServer()).get(TEST_GLOBAL).value = value;
 
                         ctx.getSource().sendFeedback(new LiteralText("set global component value to " + value), false);
 
@@ -49,7 +47,7 @@ public class OneDataStoreTest implements ModInitializer {
 
             dispatcher.register(literal("read_player_component")
                 .executes(ctx -> {
-                    ctx.getSource().sendFeedback(new LiteralText("player component value is " + TEST_PLAYER.getFor(ctx.getSource().getServer(), ctx.getSource().getPlayer().getUuid()).value), false);
+                    ctx.getSource().sendFeedback(new LiteralText("player component value is " + DataStore.getFor(ctx.getSource().getServer()).getPlayer(ctx.getSource().getPlayer().getUuid(), TEST_PLAYER).value), false);
 
                     return 1;
                 }));
@@ -59,7 +57,7 @@ public class OneDataStoreTest implements ModInitializer {
                     .executes(ctx -> {
                         int value = IntegerArgumentType.getInteger(ctx, "value");
 
-                        TEST_PLAYER.getFor(ctx.getSource().getServer(), ctx.getSource().getPlayer().getUuid()).value = value;
+                        DataStore.getFor(ctx.getSource().getServer()).getPlayer(ctx.getSource().getPlayer().getUuid(), TEST_PLAYER).value = value;
 
                         ctx.getSource().sendFeedback(new LiteralText("set player component value to " + value), false);
 

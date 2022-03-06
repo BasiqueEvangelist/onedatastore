@@ -20,7 +20,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.basiqueevangelist.onedatastore.OneDataStore"
+        "me.basiqueevangelist.onedatastore.impl.OneDataStoreInit"
     ]
   },
 
