@@ -54,7 +54,7 @@ public class OneDataStoreState extends PersistentState implements DataStore {
 
             UUID playerId = playerTag.getUuid("UUID");
 
-            players.get(playerId).fromTag(tag);
+            players.get(playerId).fromTag(playerTag);
         }
 
         for (Map.Entry<Component<?, DataStore>, ComponentInstance> entry : components.entrySet()) {
