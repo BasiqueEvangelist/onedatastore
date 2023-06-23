@@ -22,9 +22,7 @@ public class OneDataStoreInit implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            OneDataStoreState.getFrom(server).getPlayerEntry(handler.player.getUuid());
-        });
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> OneDataStoreState.getFrom(server).getPlayerEntry(handler.player.getUuid()));
     }
 
     public static <T extends ComponentInstance> Component<T, PlayerDataEntry> registerPlayerComponent(Identifier id, Function<PlayerDataEntry, T> factory) {
