@@ -28,7 +28,7 @@ public class OneDataStoreTest implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(literal("read_global_component")
                 .executes(ctx -> {
-                    ctx.getSource().sendFeedback(Text.literal("global component value is " + DataStore.getFor(ctx.getSource().getServer()).get(TEST_GLOBAL).value), false);
+                    ctx.getSource().sendFeedback(() -> Text.literal("global component value is " + DataStore.getFor(ctx.getSource().getServer()).get(TEST_GLOBAL).value), false);
 
                     return 1;
                 }));
@@ -40,14 +40,14 @@ public class OneDataStoreTest implements ModInitializer {
 
                         DataStore.getFor(ctx.getSource().getServer()).get(TEST_GLOBAL).value = value;
 
-                        ctx.getSource().sendFeedback(Text.literal("set global component value to " + value), false);
+                        ctx.getSource().sendFeedback(() -> Text.literal("set global component value to " + value), false);
 
                         return 1;
                     })));
 
             dispatcher.register(literal("read_player_component")
                 .executes(ctx -> {
-                    ctx.getSource().sendFeedback(Text.literal("player component value is " + DataStore.getFor(ctx.getSource().getServer()).getPlayer(ctx.getSource().getPlayer().getUuid(), TEST_PLAYER).value), false);
+                    ctx.getSource().sendFeedback(() -> Text.literal("player component value is " + DataStore.getFor(ctx.getSource().getServer()).getPlayer(ctx.getSource().getPlayer().getUuid(), TEST_PLAYER).value), false);
 
                     return 1;
                 }));
@@ -59,7 +59,7 @@ public class OneDataStoreTest implements ModInitializer {
 
                         DataStore.getFor(ctx.getSource().getServer()).getPlayer(ctx.getSource().getPlayer().getUuid(), TEST_PLAYER).value = value;
 
-                        ctx.getSource().sendFeedback(Text.literal("set player component value to " + value), false);
+                        ctx.getSource().sendFeedback(() -> Text.literal("set player component value to " + value), false);
 
                         return 1;
                     })));
