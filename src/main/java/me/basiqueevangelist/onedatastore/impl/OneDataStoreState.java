@@ -28,7 +28,7 @@ public class OneDataStoreState extends PersistentState implements DataStore {
     }
 
     private OneDataStoreState() {
-        for (Component<?, DataStore> comp : OneDataStoreInit.GLOBAL_COMPONENTS) {
+        for (Component<?, DataStore> comp : OneDataStoreInit.GLOBAL_COMPONENTS.values()) {
             ComponentInstance inst = comp.factory().apply(this);
             inst.wasMissing();
             components.put(comp, inst);
@@ -45,7 +45,7 @@ public class OneDataStoreState extends PersistentState implements DataStore {
             players.put(playerId, new PlayerDataEntryImpl(this, playerId));
         }
 
-        for (Component<?, DataStore> comp : OneDataStoreInit.GLOBAL_COMPONENTS) {
+        for (Component<?, DataStore> comp : OneDataStoreInit.GLOBAL_COMPONENTS.values()) {
             components.put(comp, comp.factory().apply(this));
         }
 
@@ -95,6 +95,17 @@ public class OneDataStoreState extends PersistentState implements DataStore {
     @Override
     public Collection<PlayerDataEntry> players() {
         return Collections.unmodifiableCollection(players.values());
+    }
+
+    public Map<UUID, PlayerDataEntryImpl> playersMap() {
+        return players;
+    }
+
+    public void reinitComponent(Component<?, DataStore> component) {
+        components.remove(component);
+        ComponentInstance inst = component.factory().apply(this);
+        inst.wasMissing();
+        components.put(component, inst);
     }
 
     @Override

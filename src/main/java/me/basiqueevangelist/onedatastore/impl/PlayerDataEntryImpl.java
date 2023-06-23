@@ -20,7 +20,7 @@ public class PlayerDataEntryImpl implements PlayerDataEntry {
         this.playerId = playerId;
         this.state = state;
 
-        for (Component<?, PlayerDataEntry> comp : OneDataStoreInit.PLAYER_COMPONENTS) {
+        for (Component<?, PlayerDataEntry> comp : OneDataStoreInit.PLAYER_COMPONENTS.values()) {
             components.put(comp, comp.factory().apply(this));
         }
     }
